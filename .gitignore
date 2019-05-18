@@ -1,0 +1,6 @@
+node_modules/*
+dist/*
+test
+*-lock.json
+google-cloud-sdk/*
+*base.json
