@@ -62,6 +62,15 @@ export async function remove(request: Request, response: Response) {
     response.send(user);
 }
 
+export async function registrar(request: Request, response: Response){
+    const userRepository = getManager().getRepository(User);
+    request.body.salt = `${request.body.nickName}-${request.body.password}`;
+    request.body.roles = 3;
+    const newUser = userRepository.create(request.body);
+    await userRepository.save(newUser);
+    response.send(newUser);
+}
+
 export async function autenticar(request: Request, response: Response, next: NextFunction) {
     console.log('auth');
     const userRepository = getManager().getRepository(User);

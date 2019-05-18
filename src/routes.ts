@@ -10,7 +10,7 @@ export type JsonWebToken = typeof jwt;
 
 import { post as createPost, put as updatePost, remove as deletePost, getOne as getPost, getAll as getPosts } from "./controllers/post";
 import { post as createCategory, put as updateCategory, remove as deleteCategory, getOne as getCategory, getAll as getCategories } from "./controllers/category";
-import { post as createUser, put as updateUser, remove as deleteUser, getOne as getOneUser, getAll as getAllUsers, autenticar as auth } from "./controllers/user";
+import { post as createUser, put as updateUser, remove as deleteUser, getOne as getOneUser, getAll as getAllUsers, autenticar as auth, registrar as registrar } from "./controllers/user";
 import { post as createRol, put as updateRol, remove as deleteRol, getOne as getOneRol, getAll as getAllRols } from "./controllers/rol";
 
 // Add headers
@@ -50,19 +50,18 @@ app.use(jwtCheck);
 app.get('/authorized', function (req: Request, res: Response, next: NextFunction) {
     res.send('Secured Resource');
 });*/
-
+app.post('/registro', registrar);
 app.post('/auth', auth, (req: Request, res: Response, next: NextFunction) => {
     const body = req.body;
-    console.log(body);
     var token = jwt.sign({id : body.id, name : body.name, nickname : body.nickName}, body.salt, {expiresIn : 14400});
     var {salt, password, ...rest} = body;
     rest.message = 'Bienvenido';
     rest.token = token;
     res.status(200).send(rest);
 });
+
 app.use('/', (req: Request, res: Response, next: NextFunction) => {
     var token = req.headers['x-access-token'];
-    console.log(req.query);
     if ((token != 'null')&&(token != null)&&(token != 'undefined')&&(token)) {
         var payload: any = jwt.decode(token.toString());
         if ((payload != null || payload != undefined) && payload.hasOwnProperty('exp')) {
